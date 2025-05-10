@@ -1,26 +1,33 @@
 package com.example.pedido_db.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.example.pedido_db.dto.Cliente;
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
+@Data
 public class Pedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer clienteId;   // ID del cliente que realizó el pedido
-    private Timestamp fechaPedido; // Fecha y hora del pedido
+    private Integer clienteId;  // ID del cliente que realizó el pedido
+    private Timestamp fechaPedido;  // Fecha y hora del pedido
 
     @Column(precision = 10, scale = 2)
     private BigDecimal total;  // Total del pedido
 
-    private String estado; // Estado del pedido (pendiente, enviado, etc.)
+    private String estado;  // Estado del pedido (pendiente, enviado, etc.)
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // Evitar recursión infinita
+    @JsonManagedReference // Evita la recursión infinita en la relación @OneToMany
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "pedido_id")
     private List<DetallePedido> detalle; // Lista de detalles del pedido (productos asociados)
@@ -28,9 +35,7 @@ public class Pedido {
     @Transient
     private Cliente cliente;  // Relación con Cliente, que se llena mediante Feign
 
-    public Pedido() {
-
-    }
+    // Getters y Setters
 
     public Integer getId() {
         return id;
@@ -88,16 +93,6 @@ public class Pedido {
         this.cliente = cliente;
     }
 
-    public Pedido(Integer id, Integer clienteId, Timestamp fechaPedido, BigDecimal total, String estado, List<DetallePedido> detalle, Cliente cliente) {
-        this.id = id;
-        this.clienteId = clienteId;
-        this.fechaPedido = fechaPedido;
-        this.total = total;
-        this.estado = estado;
-        this.detalle = detalle;
-        this.cliente = cliente;
-    }
-
     @Override
     public String toString() {
         return "Pedido{" +
@@ -110,7 +105,4 @@ public class Pedido {
                 ", cliente=" + cliente +
                 '}';
     }
-
-
-
 }

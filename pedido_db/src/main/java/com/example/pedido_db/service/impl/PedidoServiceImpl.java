@@ -55,33 +55,29 @@ public class PedidoServiceImpl implements PedidoService {
     public Optional<Pedido> listarPorId(Integer id) {
         try {
             Pedido pedido = pedidoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
-            System.out.println("Pedido obtenido: " + pedido);
 
-            // Llamada a ClienteFeign para obtener el cliente
+            // Cargar Cliente
             Cliente cliente = clienteFeign.listById(pedido.getClienteId()).getBody();
-            System.out.println("Cliente obtenido: " + cliente);
+            pedido.setCliente(cliente);
 
-            // Cargar los detalles del pedido y los productos
-            List<DetallePedido> detallePedidos = pedido.getDetalle().stream().map(detallePedido -> {
-                // Llamada a ProductoFeign para obtener el producto
+            // Cargar Detalles
+            List<DetallePedido> pedidoDetalles = pedido.getDetalle().stream().map(detallePedido -> {
                 Producto producto = productoFeign.listById(detallePedido.getProductoId()).getBody();
                 detallePedido.setProducto(producto);
-                System.out.println("Detalle de producto: " + detallePedido);
                 return detallePedido;
             }).collect(Collectors.toList());
 
-            pedido.setDetalle(detallePedidos);
-            pedido.setCliente(cliente);
-            System.out.println("Pedido final: " + pedido);
-
+            pedido.setDetalle(pedidoDetalles);
             return Optional.of(pedido);
         } catch (Exception e) {
-            // Capturar y registrar cualquier error
-            System.err.println("Error al procesar el pedido: " + e.getMessage());
-            e.printStackTrace();  // Imprimir la traza completa del error
+            // Log de error para detectar la causa del fallo
+            System.err.println("Error al procesar el pedido con ID " + id + ": " + e.getMessage());
+            e.printStackTrace();
             return Optional.empty();
         }
     }
+
+
 
     // Guardar un nuevo pedido
     @Override

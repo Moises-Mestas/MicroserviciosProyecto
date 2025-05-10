@@ -1,5 +1,6 @@
 package com.example.pedido_db.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.example.pedido_db.dto.Producto;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,10 +16,12 @@ public class DetallePedido {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pedido_id")  // Este es el mapeo correcto
+    @JoinColumn(name = "pedido_id")  // Relación con Pedido
+    @JsonBackReference // Evita la recursión infinita en la relación @ManyToOne
     private Pedido pedido;
+
     @Transient
-    private Producto producto; // Relación con Producto, que se llena mediante Fei
+    private Producto producto;  // Relación con Producto, que se llena mediante Feign
 
     private Integer productoId;
     private Integer cantidad;
@@ -28,7 +31,6 @@ public class DetallePedido {
 
     @Column(precision = 10, scale = 2)
     private BigDecimal total;
-
 
     // Getters y Setters
 
@@ -79,6 +81,7 @@ public class DetallePedido {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
+
     public Producto getProducto() {
         return producto;
     }
@@ -99,6 +102,3 @@ public class DetallePedido {
                 '}';
     }
 }
-
-
-

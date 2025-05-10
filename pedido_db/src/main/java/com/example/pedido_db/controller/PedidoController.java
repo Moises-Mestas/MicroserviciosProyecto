@@ -36,7 +36,6 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.actualizar(pedido));
     }
 
-    // Buscar pedido por ID
     @GetMapping("/{id}")
     public ResponseEntity<Pedido> listById(@PathVariable Integer id) {
         Optional<Pedido> pedido = pedidoService.listarPorId(id);
@@ -45,6 +44,7 @@ public class PedidoController {
         }
         return ResponseEntity.ok(pedido.get());
     }
+
     // Eliminar un pedido por ID
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {

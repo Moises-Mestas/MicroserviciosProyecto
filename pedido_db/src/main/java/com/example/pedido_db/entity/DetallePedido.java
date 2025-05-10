@@ -2,29 +2,36 @@ package com.example.pedido_db.entity;
 
 import com.example.pedido_db.dto.Producto;
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.math.BigDecimal;
 
 @Entity
+@Data
 public class DetallePedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer pedidoId;   // ID del pedido asociado
-    private Integer productoId; // ID del producto asociado
-    private Integer cantidad;   // Cantidad de producto en el pedido
-
-    @Column(precision = 10, scale = 2)
-    private BigDecimal precioUnitario; // Precio por unidad del producto
-
-    @Column(precision = 10, scale = 2)
-    private BigDecimal total; // Total por este detalle (cantidad * precioUnitario)
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pedido_id")  // Este es el mapeo correcto
+    private Pedido pedido;
     @Transient
-    private Producto producto; // Relación con Producto, que se llena mediante Feign
+    private Producto producto; // Relación con Producto, que se llena mediante Fei
 
-    // Métodos Getter y Setter
+    private Integer productoId;
+    private Integer cantidad;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precioUnitario;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal total;
+
+
+    // Getters y Setters
+
     public Integer getId() {
         return id;
     }
@@ -33,12 +40,12 @@ public class DetallePedido {
         this.id = id;
     }
 
-    public Integer getPedidoId() {
-        return pedidoId;
+    public Pedido getPedido() {
+        return pedido;
     }
 
-    public void setPedidoId(Integer pedidoId) {
-        this.pedidoId = pedidoId;
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public Integer getProductoId() {
@@ -72,7 +79,6 @@ public class DetallePedido {
     public void setTotal(BigDecimal total) {
         this.total = total;
     }
-
     public Producto getProducto() {
         return producto;
     }
@@ -85,7 +91,7 @@ public class DetallePedido {
     public String toString() {
         return "DetallePedido{" +
                 "id=" + id +
-                ", pedidoId=" + pedidoId +
+                ", pedido=" + pedido +
                 ", productoId=" + productoId +
                 ", cantidad=" + cantidad +
                 ", precioUnitario=" + precioUnitario +
@@ -93,3 +99,6 @@ public class DetallePedido {
                 '}';
     }
 }
+
+
+

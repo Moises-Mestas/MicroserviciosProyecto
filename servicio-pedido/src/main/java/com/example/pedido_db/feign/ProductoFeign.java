@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "producto-db-service", path = "/productos")
+@FeignClient(name = "servicio-producto", path = "/productos")
 public interface ProductoFeign {
 
     @GetMapping("/{id}")
@@ -21,11 +21,13 @@ public interface ProductoFeign {
         Producto producto = new Producto();
         producto.setId(id);
         producto.setNombre("Producto no disponible");
-        producto.setCategoria(null);  // Suponemos que la categoría es un objeto, por lo tanto, dejamos null si no se encuentra
+        producto.setCategoria(null);
         producto.setDescripcion("Descripción no disponible");
-        producto.setPrecio(BigDecimal.ZERO);  // Aquí cambiamos a BigDecimal.ZERO
-        producto.setStock(0);  // Establecer a 0 si el producto no está disponible
+        producto.setPrecio(BigDecimal.ZERO);
+        producto.setStock(0);
+        producto.setStockMinimo(10); // ✅ nuevo atributo agregado
 
         return ResponseEntity.ok(producto);
     }
 }
+

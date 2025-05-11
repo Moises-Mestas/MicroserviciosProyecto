@@ -44,9 +44,11 @@ public class ProductoServiceImpl implements ProductoService {
         productoDB.setDescripcion(producto.getDescripcion());
         productoDB.setPrecio(producto.getPrecio());
         productoDB.setStock(producto.getStock());
+        productoDB.setStockMinimo(producto.getStockMinimo()); // ✅ nuevo campo añadido
 
         return productoRepository.save(productoDB);
     }
+
 
     @Override
     public void eliminar(Integer id) {

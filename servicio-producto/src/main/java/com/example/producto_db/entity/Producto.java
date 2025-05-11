@@ -24,6 +24,12 @@ public class Producto {
     private BigDecimal precio;
 
     private Integer stock;
+    private Integer stockMinimo;
+
+    public Producto() {
+        this.stock = 0;              // valor por defecto como en la BD
+        this.stockMinimo = 10;       // valor por defecto como en la BD
+    }
 
     public Integer getId() {
         return id;
@@ -73,26 +79,34 @@ public class Producto {
         this.stock = stock;
     }
 
-    public Producto(Integer id, String nombre, Categoria categoria, String descripcion, BigDecimal precio, Integer stock) {
+    public Integer getStockMinimo() {
+        return stockMinimo;
+    }
+
+    public void setStockMinimo(Integer stockMinimo) {
+        this.stockMinimo = stockMinimo;
+    }
+
+    public Producto(Integer id, String nombre, Categoria categoria, String descripcion, BigDecimal precio, Integer stock, Integer stockMinimo) {
         this.id = id;
         this.nombre = nombre;
         this.categoria = categoria;
         this.descripcion = descripcion;
         this.precio = precio;
         this.stock = stock;
+        this.stockMinimo = stockMinimo;
     }
-
-    public Producto() {}
 
     @Override
     public String toString() {
         return "Producto{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", categoria=" + (categoria != null ? categoria.getId() : "null") +
+                ", categoria=" + categoria +
                 ", descripcion='" + descripcion + '\'' +
                 ", precio=" + precio +
                 ", stock=" + stock +
+                ", stockMinimo=" + stockMinimo +
                 '}';
     }
 }
